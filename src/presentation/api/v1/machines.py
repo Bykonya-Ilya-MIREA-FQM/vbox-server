@@ -1,8 +1,6 @@
-from typing import TypeVar, Generic
 import presentation.config
 import domain.machines.models
 import domain.machines
-import pydantic
 import fastapi
 import typing
 import uuid
