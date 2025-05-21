@@ -17,6 +17,10 @@ app.include_router(router = presentation.api.v1.machines.router, prefix = '/api/
 app.include_router(router = presentation.api.v1.configs.router, prefix = '/api/v1')
 app.include_router(router = presentation.api.v1.images.router, prefix = '/api/v1')
 
+@app.get('/ping')
+async def ping(): 
+    return 'OK'
+
 @app.exception_handler(domain.machines.models.VirtualBoxApiError)
 async def unicorn_exception_handler(request: fastapi.Request, exc: domain.machines.models.VirtualBoxApiError):
     return fastapi.responses.JSONResponse(
