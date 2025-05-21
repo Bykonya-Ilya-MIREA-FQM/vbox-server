@@ -1,4 +1,4 @@
-from domain.machines.models import VBoxManageCallResult, LogEntry, VirtualBoxApiResponse, VirtualBoxApiError, VrdeConnectionInfo, CreateMachineInfo, FullMachineInfo
+from . models import VBoxManageCallResult, LogEntry, VirtualBoxApiResponse, VirtualBoxApiError, VrdeConnectionInfo, CreateMachineInfo, FullMachineInfo
 import subprocess
 import pydantic
 import hashlib
