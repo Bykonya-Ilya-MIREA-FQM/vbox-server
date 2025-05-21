@@ -38,10 +38,10 @@ class VirtualBoxApi:
     def list_vms(self) -> VirtualBoxApiResponse[list[uuid.UUID]]:
         result = self.__execute_call(args = ['list', 'vms'])
         if result.status != 0:
-            raise VirtualBoxApiError(error_info = result, stage = 'list_vms.root')
+            raise VirtualBoxApiError(error_info = result, stage = 'list_vms.get_raw_list_vms')
 
         return VirtualBoxApiResponse[list[uuid.UUID]](
-            payload = [uuid.UUID(line[-37:-1]) for line in result.stdout.split(sep = '\r\n') if len(line) > 0],
+            payload = [uuid.UUID(line[-37:-1]) for line in result.stdout.splitlines() if len(line) > 0],
             logs = [LogEntry(stage = 'list_vms.root', call = result)]
         )
     @pydantic.validate_call(validate_return = True)
@@ -50,7 +50,7 @@ class VirtualBoxApi:
         if get_raw_vm_info_result.status != 0:
             raise VirtualBoxApiError(error_info = get_raw_vm_info_result, stage = 'vm_info.get_raw_vm_info')
         raw_vm_info_dict: dict[str, str] = dict()
-        for line in get_raw_vm_info_result.stdout.split(sep = '\r\n'):
+        for line in get_raw_vm_info_result.stdout.splitlines():
             if len(chunks := line.split('=', maxsplit = 1)) == 2:
                 raw_vm_info_dict[chunks[0]] = chunks[1]
 
