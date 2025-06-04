@@ -1,4 +1,4 @@
-from . models import VBoxManageCallResult, LogEntry, VirtualBoxApiResponse, VirtualBoxApiError, VrdeConnectionInfo, CreateMachineInfo, FullMachineInfo
+from . models import RunVmCommand, VBoxManageCallResult, LogEntry, VirtualBoxApiResponse, VirtualBoxApiError, VrdeConnectionInfo, CreateMachineInfo, FullMachineInfo
 import subprocess
 import pydantic
 import hashlib
@@ -32,7 +32,16 @@ class VirtualBoxApi:
             args = raw_result.args,
         )
 
+    @pydantic.validate_call(validate_return = True)
+    def run_vm_command(self, vm_uuid: uuid.UUID, run_vm_command_info: RunVmCommand) -> VirtualBoxApiResponse[None]:
+        # result = self.__execute_call(args = ['--nologo', 'guestcontrol', str(vm_uuid), 'run', '--exe', run_vm_command_info.executable, '--username', run_vm_command_info.username, '--password', run_vm_command_info.password, '--verbose', '--wait-stdout', '--wait-stderr', '--'] + run_vm_command_info.arguments)
+        result = self.__execute_call(args = ['--nologo', 'guestcontrol', str(vm_uuid), 'run', '--exe', run_vm_command_info.executable, '--username', run_vm_command_info.username, '--password', run_vm_command_info.password, '--wait-stdout', '--wait-stderr', '--'] + run_vm_command_info.arguments)
+        if result.status != 0:
+            raise VirtualBoxApiError(error_info = result, stage = 'run_vm_command.root')
 
+        return VirtualBoxApiResponse[None](
+            payload = None, logs = [LogEntry(stage = 'run_vm_command.root', call = result)]
+        )
 
     @pydantic.validate_call(validate_return = True)
     def list_vms(self) -> VirtualBoxApiResponse[list[uuid.UUID]]:

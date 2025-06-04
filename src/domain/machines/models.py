@@ -1,5 +1,11 @@
 import pydantic
 
+class RunVmCommand(pydantic.BaseModel):
+    username: pydantic.constr(min_length = 1)
+    password: pydantic.constr(min_length = 1)
+    executable: pydantic.constr(min_length = 1)
+    arguments: list[pydantic.constr(min_length = 1)]
+    timeout_ms: pydantic.PositiveInt
 
 class VBoxManageCallResult(pydantic.BaseModel):
     args: list[str]

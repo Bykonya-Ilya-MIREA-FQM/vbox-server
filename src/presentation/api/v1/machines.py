@@ -30,6 +30,9 @@ def create_vm(vbox_api: typing.Annotated[domain.machines.VirtualBoxApi, fastapi.
 def delete_vm(vbox_api: typing.Annotated[domain.machines.VirtualBoxApi, fastapi.Depends(get_vboxapi)], machine_uuid: typing.Annotated[uuid.UUID, fastapi.Path()]) -> domain.machines.models.VirtualBoxApiResponse[None]:
     return vbox_api.delete_vm(vm_uuid = machine_uuid)
 
+@router.post('/machine/{machine_uuid}/run_command', response_model = domain.machines.models.VirtualBoxApiResponse[None])
+def run_vm_command(vbox_api: typing.Annotated[domain.machines.VirtualBoxApi, fastapi.Depends(get_vboxapi)], machine_uuid: typing.Annotated[uuid.UUID, fastapi.Path()], run_vm_command: typing.Annotated[domain.machines.models.RunVmCommand, fastapi.Body()]) -> domain.machines.models.VirtualBoxApiResponse[None]:
+    return vbox_api.run_vm_command(vm_uuid = machine_uuid, run_vm_command_info = run_vm_command)
 @router.post('/machine/{machine_uuid}/start', response_model = domain.machines.models.VirtualBoxApiResponse[domain.machines.models.VrdeConnectionInfo])
 def start_vm(vbox_api: typing.Annotated[domain.machines.VirtualBoxApi, fastapi.Depends(get_vboxapi)], machine_uuid: typing.Annotated[uuid.UUID, fastapi.Path()]) -> domain.machines.models.VirtualBoxApiResponse[None]:
     return vbox_api.start_vm(vm_uuid = machine_uuid)
